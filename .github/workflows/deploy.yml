@@ -2,29 +2,30 @@ name: Deploy to Heroku
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master  # Or 'main' if that's your default branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: 🛎️ Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: 🔧 Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '20.18.0'  # Use the Node.js version compatible with your project
 
-      - name: Install Dependencies
+      - name: 📦 Install Dependencies
         run: npm install
 
-      - name: Build Project
+      - name: 🛠️ Build Project
         run: npm run build
 
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
+      - name: 🚀 Deploy to Heroku
+        uses: heroku/heroku-deploy@v1.2.0
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
