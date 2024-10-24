@@ -16,7 +16,7 @@ jobs:
       - name: 🔧 Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.18.0'  # Use the Node.js version compatible with your project
+          node-version: '20.18.0'  # Adjust the Node.js version as needed
 
       - name: 📦 Install Dependencies
         run: npm install
@@ -24,9 +24,26 @@ jobs:
       - name: 🛠️ Build Project
         run: npm run build
 
+      - name: 📥 Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: 🔑 Authenticate with Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        run: |
+          echo "machine api.heroku.com" > ~/.netrc
+          echo "  login $HEROKU_EMAIL" >> ~/.netrc
+          echo "  password $HEROKU_API_KEY" >> ~/.netrc
+          echo "machine git.heroku.com" >> ~/.netrc
+          echo "  login $HEROKU_EMAIL" >> ~/.netrc
+          echo "  password $HEROKU_API_KEY" >> ~/.netrc
+          chmod 600 ~/.netrc
+
       - name: 🚀 Deploy to Heroku
-        uses: heroku/heroku-deploy@v1.2.0
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        env:
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          heroku git:remote --app $HEROKU_APP_NAME
+          git push heroku HEAD:main --force  # Use 'master' if that's your default branch
