@@ -1,4 +1,4 @@
-name: Deploy to Heroku
+name: Deploy to Render
 
 on:
   push:
@@ -24,22 +24,8 @@ jobs:
       - name: 🛠️ Build Project
         run: npm run build
 
-      - name: 📥 Install Heroku CLI
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: 🔑 Authenticate with Heroku
-        run: |
-          echo "machine api.heroku.com" > ~/.netrc
-          echo "  login ${{ secrets.HEROKU_EMAIL }}" >> ~/.netrc
-          echo "  password ${{ secrets.HEROKU_API_KEY }}" >> ~/.netrc
-          echo "machine git.heroku.com" >> ~/.netrc
-          echo "  login ${{ secrets.HEROKU_EMAIL }}" >> ~/.netrc
-          echo "  password ${{ secrets.HEROKU_API_KEY }}" >> ~/.netrc
-          chmod 600 ~/.netrc
-
-      - name: 🚀 Deploy to Heroku
-        run: |
-          echo "Deploying to Heroku app: ${{ secrets.HEROKU_APP_NAME }}"
-          heroku git:remote --app ${{ secrets.HEROKU_APP_NAME }}
-          git push heroku HEAD:master --force  # Use 'main' if that's your default branch
+      - name: 🚀 Deploy to Render
+        uses: render-examples/deploy-to-render-action@v1
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
