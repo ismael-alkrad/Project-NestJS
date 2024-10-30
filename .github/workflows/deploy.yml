@@ -25,7 +25,7 @@ jobs:
         run: npm run build
 
       - name: 🚀 Deploy to Render
-        uses: Project-NestJS/deploy-to-render-action@v1
+        uses: Project-NestJS/master@v1
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
